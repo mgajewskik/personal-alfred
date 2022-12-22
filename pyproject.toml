@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "personal-alfred"
+version = "0.1.0"
+description = ""
+authors = ["mgajewskik <mgajewskik@gmail.com>"]
+readme = "README.md"
+packages = [{include = "service"}]
+
+[tool.poetry.dependencies]
+# chalice does not support python higher than 3.7 even though we want to use
+# 3.9 in lambda
+python = "^3.7"
+pydantic = "^1.10.2"
+
+[tool.poetry.group.dev.dependencies]
+chalice = "^1.27.3"
+boto3 = "^1.26.22"
+pytest = "^7.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

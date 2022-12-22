@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+
+PROJECT=service
+PYTHON_VERSION=3.9.16
+TF_VERSION=1.1.9
+BASE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+
+function _dir {
+	# make sure that running path is a base directory
+	# useful for nected functions that are changing dirs
+	cd "$BASE_DIR"
+}
+
+function install {
+	# create poetry venv and install all dependencies
+	_dir
+	echo "$PYTHON_VERSION" >.python-version
+	poetry env use python3.9
+	poetry install
+
+	echo "$TF_VERSION" >"$BASE_DIR"/infra/.terraform-version
+	mkdir -p "$BASE_DIR/$PROJECT"/infra
+	echo "$TF_VERSION" >"$BASE_DIR"/"$PROJECT"/infra/.terraform-version
+	echo "poetry venv created, run shell to activate"
+}
+
+function shell {
+	# open shell in poetry venv
+	_dir
+	poetry shell
+}
+
+function _ci_setup {
+	# make steps necessary for remote cloned repo
+	_dir
+	mkdir -p "$BASE_DIR/$PROJECT"/infra
+}
+
+function _requirements {
+	# generate requirements.txt from poetry.lock
+	_dir
+	poetry export --without-hashes --format=requirements.txt | sed -e 's/;.*//' >"$PROJECT"/requirements.txt
+	echo "requirements.txt generated from pyproject.toml"
+}
+
+function _gen_chalice_infra {
+	# populate .chalice/config.json with stateful terraform outputs
+	# generate terraform deployment files based on config
+	_dir
+	_requirements
+	poetry run python config.py --chalice
+
+	cd "$BASE_DIR/$PROJECT"
+	poetry run chalice package --pkg-format terraform infra
+
+	cd "$BASE_DIR"
+	poetry run python config.py --backend
+
+	echo "chalice infra generated"
+}
+
+function deploy_main_infra {
+	# deploy stateful terraform infrastructure
+	_dir
+	cd infra
+	terraform init -reconfigure
+	terraform apply -auto-approve
+}
+
+function output {
+	# output terraform outputs
+	_dir
+	cd infra
+	terraform output "$@"
+}
+
+function plan {
+	# deploy stateful resources and generate plan for stateless resources
+	_dir
+	deploy_main_infra
+	_gen_chalice_infra
+
+	cd "$PROJECT"/infra
+	terraform init -reconfigure
+	terraform plan
+}
+
+function deploy {
+	# deploy stateful and stateless resources
+	_dir
+	deploy_main_infra
+	_gen_chalice_infra
+
+	cd "$PROJECT"/infra
+	terraform init -reconfigure
+	terraform apply -auto-approve
+}
+
+function destroy {
+	_dir
+	cd "$PROJECT"/infra
+	terraform destroy -auto-approve
+
+	# uncomment to destroy stateful resources too
+	# cd "$BASE_DIR"/infra
+	# terraform destroy -auto-approve
+}
+
+function local {
+	# run server for local testing
+	_dir
+	cd "$PROJECT"
+	poetry run chalice local "${@}"
+}
+
+function api {
+	# output deployed api url
+	_dir
+	cd "$PROJECT"/infra
+	terraform output EndpointURL
+}
+
+function test {
+	# run tests
+	_dir
+	poetry run pytest
+}
+
+function help {
+	printf "%s <task> [args]\n\nTasks:\n" "${0}"
+	compgen -A function | grep -v "^_" | cat -n
+	printf "\nExtended help:\n  Each task has comments for general usage\n"
+}
+
+TIMEFORMAT=$'\nTask completed in %3lR'
+time "${@:-help}"
