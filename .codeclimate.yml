@@ -11,7 +11,7 @@ plugins:
   pep8:
     enabled: true
   pylint:
-    enabled: true
+    enabled: false
   sonar-python:
     enabled: true
     config:
