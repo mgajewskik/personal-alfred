@@ -1,6 +1,7 @@
 name: CI
 on:
   push:
+  pull_request:
   workflow_dispatch:
 jobs:
   code_checks:
@@ -27,4 +28,3 @@ jobs:
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
         with:
           coverageCommand: ./run cov --cov-report=xml
-          debug: true
