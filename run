@@ -18,7 +18,7 @@ function install {
 	# create poetry venv and install all dependencies
 	_dir
 	echo "$PYTHON_VERSION" >.python-version
-	poetry env use python3.9
+	# poetry env use python3.9
 	poetry install
 
 	echo "$TF_VERSION" >"$BASE_DIR"/infra/.terraform-version
@@ -132,7 +132,7 @@ function test {
 function cov {
 	# run tests with coverage
 	_dir
-	poetry run pytest --cov
+	poetry run pytest --cov "${@}"
 }
 
 function help {

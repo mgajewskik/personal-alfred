@@ -1,0 +1,30 @@
+name: CI
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  code_checks:
+    runs-on: ubuntu-latest
+    name: Python Checks
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          architecture: x64
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.2.2
+          virtualenvs-create: false
+          installer-parallel: true
+      - name: Install project
+        run: ./run install
+      - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v3.2.0
+        env:
+          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+        with:
+          coverageCommand: ./run cov --cov-report=xml
+          debug: true
