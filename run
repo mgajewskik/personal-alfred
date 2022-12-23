@@ -129,6 +129,12 @@ function test {
 	poetry run pytest
 }
 
+function cov {
+	# run tests with coverage
+	_dir
+	poetry run pytest --cov
+}
+
 function help {
 	printf "%s <task> [args]\n\nTasks:\n" "${0}"
 	compgen -A function | grep -v "^_" | cat -n

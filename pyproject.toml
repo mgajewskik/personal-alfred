@@ -19,6 +19,7 @@ boto3 = "^1.26.22"
 pytest = "^7.2.0"
 pytest-mock = "^3.10.0"
 moto = "^4.0.12"
+pytest-cov = "^4.0.0"
 
 [build-system]
 requires = ["poetry-core"]
