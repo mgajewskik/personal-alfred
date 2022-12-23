@@ -1,44 +1,39 @@
 import os
-from typing import List
 
-import boto3
-from chalice.app import Chalice
-from pydantic import BaseModel
+from chalice.app import Chalice, LambdaFunctionEvent
 
-app = Chalice(app_name="alfred")
-s3 = boto3.client("s3")
-
-
-class Bucket(BaseModel):
-    name: str
-
-
-class BucketList(BaseModel):
-    buckets: List[Bucket]
+# HACK: imports in lambda are different than local
+if os.environ.get("SOURCE") == "lambda":
+    from chalicelib.api import api
+    from chalicelib.events import event
+    from chalicelib.lambdas import lone
+    from chalicelib.settings import get_settings
+else:
+    from service.chalicelib.api import api
+    from service.chalicelib.events import event
+    from service.chalicelib.lambdas import lone
+    from service.chalicelib.settings import get_settings
 
 
-@app.route("/")
-def index():
-    return {"chalice": "example"}
+def create_app():
+    settings = get_settings()
+    app = Chalice(app_name="alfred")
+    app.log.setLevel(settings.LOG_LEVEL)
+    app.register_blueprint(api)
+    app.register_blueprint(lone)
+    app.register_blueprint(event)
+
+    @app.middleware("all")
+    def log_event(event, get_response):
+        # TODO authorization is showing as a plain text in debug log
+        if isinstance(event, LambdaFunctionEvent):
+            app.log.info(event.context)
+        else:
+            app.log.info(event.json_body)
+        app.log.debug(event.to_dict())
+        return get_response(event)
+
+    return app
 
 
-@app.route("/buckets")
-def buckets():
-    response = s3.list_buckets()
-
-    names = []
-    for bucket in response["Buckets"]:
-        names.append(Bucket(name=bucket["Name"]))
-
-    return BucketList(buckets=names).json()
-
-
-@app.route("/env")
-def env():
-    chalice_bucket = os.environ.get("CHALICE_BUCKET_NAME")
-    return {"env": {"CHALICE_BUCKET_NAME": chalice_bucket}}
-
-
-@app.lambda_function(name="custom-lambda-chalice")
-def custom_lambda_function(event, context):
-    return {}
+app = create_app()

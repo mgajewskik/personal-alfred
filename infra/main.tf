@@ -16,6 +16,6 @@ resource "aws_s3_bucket" "storage" {
   }
 }
 
-output "base_storage" {
+output "s3_bucket_name" {
   value = aws_s3_bucket.storage.id
 }

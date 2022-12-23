@@ -4,3 +4,6 @@
 
 service/infra
 service/.chalice/config.json
+
+notes.md
+bot.py

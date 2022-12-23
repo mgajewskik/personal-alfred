@@ -19,7 +19,7 @@ CHALICE_CONFIG = {
             "api_gateway_endpoint_type": "REGIONAL",
             "api_gateway_custom_domain": {},
             "automatic_layer": True,
-            "environment_variables": {"ENV": "dev"},
+            "environment_variables": {"ENV": "dev", "SOURCE": "lambda"},
             "tags": {"onset": "chalice"},
         }
     },
