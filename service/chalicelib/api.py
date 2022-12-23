@@ -10,6 +10,7 @@ s3 = boto3.client("s3")
 settings = get_settings()
 
 
+# TODO try to use only POST here and test this change
 @api.route("/bot", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"])
 def bot_handler():
     # dumping to json makes \" ugly formatting
