@@ -28,6 +28,10 @@ variable "dummy_auth_token" {
   type = string
 }
 
+variable "lumigo_tracer_token" {
+  type = string
+}
+
 locals {
   resource_prefix = "${var.aws_region}-${var.service_name}-${var.environment}"
 }

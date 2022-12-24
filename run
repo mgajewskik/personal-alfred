@@ -23,6 +23,7 @@ function install {
 
 	echo "$TF_VERSION" >"$BASE_DIR"/infra/.terraform-version
 	mkdir -p "$BASE_DIR/$PROJECT"/infra
+	# TODO one time tfenv didn't work with this file, couldn't make a deployment
 	echo "$TF_VERSION" >"$BASE_DIR"/"$PROJECT"/infra/.terraform-version
 	echo "poetry venv created, run shell to activate"
 }

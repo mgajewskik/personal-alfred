@@ -265,6 +265,14 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "lumigo-tracer"
+version = "1.1.211"
+description = "Lumigo Tracer for Python v3.6 / v3.7 / 3.8 /3.9 runtimes"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "markupsafe"
 version = "2.1.1"
 description = "Safely add untrusted strings to HTML/XML markup."
@@ -654,7 +662,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "d3f886055f98dcfcc453464604db00935d685608c88cda42f99b705474293e45"
+content-hash = "e52cedbd3c4fcc3e8f32fe994a4428967bcbaa2411c441fa1315648ab04f6241"
 
 [metadata.files]
 ansicon = [
@@ -875,6 +883,9 @@ jinxed = [
 jmespath = [
     {file = "jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980"},
     {file = "jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe"},
+]
+lumigo-tracer = [
+    {file = "lumigo_tracer-1.1.211-py3-none-any.whl", hash = "sha256:ae07d11c1d90808f190297479f78d119ab36cb1e4a78453b1431a8d21a031140"},
 ]
 markupsafe = [
     {file = "MarkupSafe-2.1.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:86b1f75c4e7c2ac2ccdaec2b9022845dbb81880ca318bb7a0a01fbf7813e3812"},

@@ -12,6 +12,7 @@ packages = [{include = "service"}]
 python = "^3.7"
 pydantic = "^1.10.2"
 pytelegrambotapi = "^4.8.0"
+lumigo-tracer = "^1.1.211"
 
 [tool.poetry.group.dev.dependencies]
 chalice = "^1.27.3"
