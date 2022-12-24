@@ -100,7 +100,7 @@ def test_client() -> Generator[Client, None, None]:
         mock_settings.return_value = test_api_settings()
 
         # TODO look for another patching solution - is it even being used?
-        with patch("service.chalicelib.bot.bot") as mock_bot:
+        with patch("service.chalicelib.bot.get_bot") as mock_bot:
             mock_bot.return_value = test_bot_client()
 
             from service.app import create_app
