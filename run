@@ -106,8 +106,8 @@ function destroy {
 	terraform destroy -auto-approve
 
 	# uncomment to destroy stateful resources too
-	# cd "$BASE_DIR"/infra
-	# terraform destroy -auto-approve
+	cd "$BASE_DIR"/infra
+	terraform destroy -auto-approve
 }
 
 function local {

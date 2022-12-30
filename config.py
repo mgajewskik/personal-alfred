@@ -15,6 +15,7 @@ CHALICE_CONFIG = {
     "app_name": SERVICE_NAME,
     "stages": {
         "dev": {
+            # "autogen_policy": True,
             "api_gateway_stage": "api",
             "api_gateway_endpoint_type": "REGIONAL",
             "api_gateway_custom_domain": {},
