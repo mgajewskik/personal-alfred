@@ -2,7 +2,4 @@
 **/requirements.txt
 **/.terraform.lock.hcl
 
-service/infra
-service/.chalice/config.json
-
 notes.md

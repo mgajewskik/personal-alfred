@@ -1,7 +1,7 @@
 import boto3
 
-from .models import User
-from .settings import APISettings
+from service.models import User
+from service.settings import APISettings
 
 
 def get_dynamodb(settings: APISettings) -> boto3.resource:
@@ -29,7 +29,7 @@ class Dynamo:
     def __init__(self, settings: APISettings):
         self.dynamodb = get_dynamodb(settings)
         self.settings = settings
-        self.db = self.dynamodb.Table(self.settings.USERS_TABLE_NAME)
+        self.db = self.dynamodb.Table(self.settings.DYNAMO_TABLE_NAME)
 
     # PK
     def get_user(self, user_id: int):

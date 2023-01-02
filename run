@@ -5,8 +5,10 @@ set -o pipefail
 
 PROJECT=service
 PYTHON_VERSION=3.9.16
-TF_VERSION=1.1.9
+TF_VERSION=1.3.6
 BASE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+PROJECT_DIR=$BASE_DIR/$PROJECT
+TF_DIR=$BASE_DIR/infra/terraform
 
 function _dir {
 	# make sure that running path is a base directory
@@ -21,10 +23,7 @@ function install {
 	# poetry env use python3.9
 	poetry install
 
-	echo "$TF_VERSION" >"$BASE_DIR"/infra/.terraform-version
-	mkdir -p "$BASE_DIR/$PROJECT"/infra
-	# TODO one time tfenv didn't work with this file, couldn't make a deployment
-	echo "$TF_VERSION" >"$BASE_DIR"/"$PROJECT"/infra/.terraform-version
+	echo "$TF_VERSION" >"$TF_DIR"/.terraform-version
 	echo "poetry venv created, run shell to activate"
 }
 
@@ -34,94 +33,67 @@ function shell {
 	poetry shell
 }
 
-function _ci_setup {
-	# make steps necessary for remote cloned repo
-	_dir
-	mkdir -p "$BASE_DIR/$PROJECT"/infra
-}
-
 function _requirements {
 	# generate requirements.txt from poetry.lock
 	_dir
-	poetry export --without-hashes --format=requirements.txt | sed -e 's/;.*//' >"$PROJECT"/requirements.txt
+	poetry export --without-hashes --format=requirements.txt | sed -e 's/;.*//' >requirements.txt
 	echo "requirements.txt generated from pyproject.toml"
 }
 
-function _gen_chalice_infra {
-	# populate .chalice/config.json with stateful terraform outputs
-	# generate terraform deployment files based on config
+function clean {
+	# remove build artifacts
 	_dir
-	_requirements
-	poetry run python config.py --chalice
-
-	cd "$BASE_DIR/$PROJECT"
-	poetry run chalice package --pkg-format terraform infra
-
-	cd "$BASE_DIR"
-	poetry run python config.py --backend
-
-	echo "chalice infra generated"
+	rm -rf "$BASE_DIR"/infra/terraform/layer.zip
+	rm -rf "$BASE_DIR"/infra/terraform/lambda.zip
+	echo "old zip packages removed"
+	rm -rf requirements.txt
+	echo "requirements.txt removed"
 }
 
-function deploy_main_infra {
+function build {
+	# build package
+	# TODO this method does not support deployment only when changes occurred
+	clean
+	_requirements
+	pip install --target "$BASE_DIR"/infra/package/zip/python/lib/python3.9/site-packages -r requirements.txt
+	echo "packages installed into infra/package/zip/python/lib/python3.9/site-packages"
+
+	cd "$BASE_DIR"/infra/package/zip
+	zip -r "$BASE_DIR"/infra/terraform/layer.zip . -x **/__pycache__/**\*
+	echo "layer.zip created"
+	cd "$BASE_DIR"
+	zip -r "$BASE_DIR"/infra/terraform/lambda.zip ./"$PROJECT" -x **/__pycache__/**\*
+	echo "lambda.zip created"
+
+	rm -rf "$BASE_DIR"/infra/package
+	echo "package folder removed"
+}
+
+function plan {
+	# run terraform plan
+	cd "$TF_DIR"
+	terraform init -reconfigure
+	terraform plan
+}
+
+function deploy {
 	# deploy stateful terraform infrastructure
-	_dir
-	cd infra
+	build
+	cd "$TF_DIR"
 	terraform init -reconfigure
 	terraform apply -auto-approve
 }
 
 function output {
 	# output terraform outputs
-	_dir
-	cd infra
+	cd "$TF_DIR"
 	terraform output "$@"
 }
 
-function plan {
-	# deploy stateful resources and generate plan for stateless resources
-	_dir
-	deploy_main_infra
-	_gen_chalice_infra
-
-	cd "$PROJECT"/infra
-	terraform init -reconfigure
-	terraform plan
-}
-
-function deploy {
-	# deploy stateful and stateless resources
-	_dir
-	deploy_main_infra
-	_gen_chalice_infra
-
-	cd "$PROJECT"/infra
-	terraform init -reconfigure
-	terraform apply -auto-approve
-}
-
 function destroy {
-	_dir
-	cd "$PROJECT"/infra
+	# destroy stateful terraform infrastructure
+	cd "$TF_DIR"
 	terraform destroy -auto-approve
-
-	# uncomment to destroy stateful resources too
-	cd "$BASE_DIR"/infra
-	terraform destroy -auto-approve
-}
-
-function local {
-	# run server for local testing
-	_dir
-	cd "$PROJECT"
-	poetry run chalice local "${@}"
-}
-
-function api {
-	# output deployed api url
-	_dir
-	cd "$PROJECT"/infra
-	terraform output EndpointURL
 }
 
 function test {

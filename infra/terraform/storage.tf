@@ -1,8 +1,3 @@
-provider "aws" {
-  region      = var.aws_region
-  max_retries = 10
-}
-
 resource "aws_s3_bucket" "storage" {
   bucket = "${local.resource_prefix}-storage"
   acl    = "private"
@@ -14,8 +9,4 @@ resource "aws_s3_bucket" "storage" {
       }
     }
   }
-}
-
-output "s3_bucket_name" {
-  value = aws_s3_bucket.storage.id
 }

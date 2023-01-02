@@ -34,4 +34,15 @@ variable "lumigo_tracer_token" {
 
 locals {
   resource_prefix = "${var.aws_region}-${var.service_name}-${var.environment}"
+
+  # old variables for zipping archives in terraform
+  # root_path           = "${path.module}/../.."
+  # lambda_package_path = "${local.root_path}/service"
+  # package_path        = "${local.root_path}/infra/terraform/package"
+  # layer_package_path  = "${local.package_path}/zip"
+  # lambda_zip_path     = "${local.package_path}/lambda.zip"
+  # layer_zip_path      = "${local.package_path}/layer.zip"
+
+  lambda_zip_path = "${path.module}/lambda.zip"
+  layer_zip_path  = "${path.module}/layer.zip"
 }

@@ -7,21 +7,20 @@ readme = "README.md"
 packages = [{include = "service"}]
 
 [tool.poetry.dependencies]
-# chalice does not support python higher than 3.7 even though we want to use
-# 3.9 in lambda
-python = "^3.7"
+python = "^3.9"
 pydantic = "^1.10.2"
 pytelegrambotapi = "^4.8.0"
 lumigo-tracer = "^1.1.211"
+aws-lambda-powertools = {extras = ["all"], version = "^2.5.0"}
 
 [tool.poetry.group.dev.dependencies]
-chalice = "^1.27.3"
 boto3 = "^1.26.22"
 pytest = "^7.2.0"
 pytest-mock = "^3.10.0"
 moto = "^4.0.12"
 pytest-cov = "^4.0.0"
 coverage = "^7.0.0"
+aws-lambda-powertools = {extras = ["aws-sdk"], version = "^2.5.0"}
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,5 +1,5 @@
-resource "aws_dynamodb_table" "users" {
-  name             = "${local.resource_prefix}-users"
+resource "aws_dynamodb_table" "table" {
+  name             = "${local.resource_prefix}-table"
   billing_mode     = "PAY_PER_REQUEST"
   stream_enabled   = true
   stream_view_type = "NEW_AND_OLD_IMAGES"
@@ -50,19 +50,4 @@ resource "aws_dynamodb_table" "users" {
   server_side_encryption {
     enabled = true
   }
-
-  # seems to be not needed for pay per request model
-  # lifecycle {
-  #   ignore_changes = [
-  #     read_capacity, write_capacity
-  #   ]
-  # }
-}
-
-output "users_table_name" {
-  value = aws_dynamodb_table.users.name
-}
-
-output "users_table_stream_arn" {
-  value = aws_dynamodb_table.users.stream_arn
 }

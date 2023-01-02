@@ -2,12 +2,6 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-# seems like this is a proper type for the bot event
-# from telebot.types import Update
-
-# TODO do I even need those models now?
-# nothing to deserialize here
-
 
 # TODO find easier way to serialize to proper names
 class User(BaseModel):
@@ -23,6 +17,7 @@ class User(BaseModel):
         return {
             "PK": f"USER#{str( self.id )}",
             "SK": "USER",
+            # TODO save is bot as a single number instead of string/bool?
             "DATA": f"{self.is_bot}#{self.language_code}",
             "FirstName": self.first_name,
             "LastName": self.last_name,
