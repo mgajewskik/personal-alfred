@@ -3,3 +3,9 @@
 **/.terraform.lock.hcl
 
 notes.md
+config.json
+chalice.tf.json
+*bot.py
+format.py
+legacy-config.py
+event.json
