@@ -38,5 +38,5 @@ resource "aws_lambda_layer_version" "layer" {
   compatible_runtimes = ["python3.9"]
 
   # TODO make this not update every time
-  source_code_hash = filebase64sha256(local.layer_zip_path)
+  # source_code_hash = filebase64sha256(local.layer_zip_path)
 }

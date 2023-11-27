@@ -76,6 +76,17 @@ function plan {
 	terraform plan
 }
 
+function cost {
+    export DISABLE_TELEMETRY=true
+	# check infra costs based on downloaded real usage data and provided estimations
+	# this overwrites manual entries for lambda, dynamo, s3, EKS, autoscalling
+	# flag --sync-usage-file is using AWS credentials to download real usage data
+	infracost breakdown \
+		--path "$TF_DIR" \
+		--usage-file "$BASE_DIR"/infra/infracost-usage.yml \
+		--sync-usage-file
+}
+
 function deploy {
 	# deploy stateful terraform infrastructure
 	build

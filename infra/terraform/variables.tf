@@ -17,19 +17,23 @@ variable "base_domain" {
 }
 
 variable "telegram_bot_token" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "admin_chat_id" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "dummy_auth_token" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "lumigo_tracer_token" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 locals {

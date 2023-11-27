@@ -9,6 +9,8 @@ class APISettings(BaseSettings):
     # S3_BUCKET_NAME: str
     DYNAMO_TABLE_NAME: str
     DYNAMO_TABLE_STREAM_ARN: str
+    SQS_QUEUE_URL: str
+    SNS_TOPIC_ARN: str
 
     ADMIN_CHAT_ID: int
     DUMMY_AUTH_TOKEN: str

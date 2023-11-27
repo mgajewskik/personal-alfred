@@ -18,12 +18,17 @@ module "api" {
     "LUMIGO_TRACER_TOKEN"     = var.lumigo_tracer_token
     "DYNAMO_TABLE_NAME"       = aws_dynamodb_table.table.name
     "DYNAMO_TABLE_STREAM_ARN" = aws_dynamodb_table.table.stream_arn
+    "SQS_QUEUE_URL"           = aws_sqs_queue.admin.url
+    "SNS_TOPIC_ARN"           = aws_sns_topic.admin.arn
   }
 
   permissions = [
     "logs:CreateLogGroup",
     "logs:CreateLogStream",
     "logs:PutLogEvents",
+    "sns:Publish",
+    "sqs:SendMessage",
+    "sqs:ReceiveMessage",
   ]
 
   filename = local.lambda_zip_path
@@ -52,6 +57,8 @@ module "bot" {
     "LUMIGO_TRACER_TOKEN"     = var.lumigo_tracer_token
     "DYNAMO_TABLE_NAME"       = aws_dynamodb_table.table.name
     "DYNAMO_TABLE_STREAM_ARN" = aws_dynamodb_table.table.stream_arn
+    "SQS_QUEUE_URL"           = aws_sqs_queue.admin.url
+    "SNS_TOPIC_ARN"           = aws_sns_topic.admin.arn
   }
 
   permissions = [

@@ -4,14 +4,14 @@ version = "0.1.0"
 description = ""
 authors = ["mgajewskik <mgajewskik@gmail.com>"]
 readme = "README.md"
-packages = [{include = "service"}]
+packages = [{ include = "service" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 pydantic = "^1.10.2"
 pytelegrambotapi = "^4.8.0"
 lumigo-tracer = "^1.1.211"
-aws-lambda-powertools = {extras = ["all"], version = "^2.5.0"}
+aws-lambda-powertools = { extras = ["all"], version = "^2.5.0" }
 
 [tool.poetry.group.dev.dependencies]
 boto3 = "^1.26.22"
@@ -20,7 +20,7 @@ pytest-mock = "^3.10.0"
 moto = "^4.0.12"
 pytest-cov = "^4.0.0"
 coverage = "^7.0.0"
-aws-lambda-powertools = {extras = ["aws-sdk"], version = "^2.5.0"}
+aws-lambda-powertools = { extras = ["aws-sdk"], version = "^2.5.0" }
 
 [build-system]
 requires = ["poetry-core"]
